@@ -149,7 +149,7 @@ class DatabaseWriter(RobotDatabase):
 
     def _create_table(self, table_name, columns, unique_columns=()):
         definitions = ['id INTEGER PRIMARY KEY']
-        for column_name, properties in columns.items():
+        for column_name, properties in list(columns.items()):
             definitions.append('%s %s' % (column_name, properties))
         if unique_columns:
             unique_column_names = ', '.join(unique_columns)
@@ -179,21 +179,21 @@ class DatabaseWriter(RobotDatabase):
 
     def fetch_id(self, table_name, criteria):
         sql_statement = 'SELECT id FROM %s WHERE ' % table_name
-        sql_statement += ' AND '.join('%s=?' % key for key in criteria.keys())
-        res = self._connection.execute(sql_statement, criteria.values()).fetchone()
+        sql_statement += ' AND '.join('%s=?' % key for key in list(criteria.keys()))
+        res = self._connection.execute(sql_statement, list(criteria.values())).fetchone()
         if not res:
             raise Exception('Query did not yield id, even though it should have.'
-                            '\nSQL statement was:\n%s\nArguments were:\n%s' % (sql_statement, criteria.values()))
+                            '\nSQL statement was:\n%s\nArguments were:\n%s' % (sql_statement, list(criteria.values())))
         return res[0]
 
     def insert(self, table_name, criteria):
-        sql_statement = self._format_insert_statement(table_name, criteria.keys())
-        cursor = self._connection.execute(sql_statement, criteria.values())
+        sql_statement = self._format_insert_statement(table_name, list(criteria.keys()))
+        cursor = self._connection.execute(sql_statement, list(criteria.values()))
         return cursor.lastrowid
 
     def insert_or_ignore(self, table_name, criteria):
-        sql_statement = self._format_insert_statement(table_name, criteria.keys(), 'IGNORE')
-        self._connection.execute(sql_statement, criteria.values())
+        sql_statement = self._format_insert_statement(table_name, list(criteria.keys()), 'IGNORE')
+        self._connection.execute(sql_statement, list(criteria.values()))
 
     def insert_many_or_ignore(self, table_name, column_names, values):
         sql_statement = self._format_insert_statement(table_name, column_names, 'IGNORE')

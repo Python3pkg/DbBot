@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from __future__ import with_statement
+
 from datetime import datetime
 from hashlib import sha1
 from robot.api import ExecutionResult
@@ -77,7 +77,7 @@ class RobotResultsParser(object):
 
     def _parse_tag_statistics(self, tag_statistics, test_run_id):
         self._verbose('  `--> Parsing tag statistics')
-        [self._parse_tag_stats(stat, test_run_id) for stat in tag_statistics.tags.values()]
+        [self._parse_tag_stats(stat, test_run_id) for stat in list(tag_statistics.tags.values())]
 
     def _parse_tag_stats(self, stat, test_run_id):
         self._db.insert_or_ignore('tag_status', {

@@ -7,7 +7,7 @@ from os.path import abspath, basename, dirname, join, splitext
 try:
   import pydot
 except ImportError:
-  print '''You need to have pydot and Graphviz installed.
+  print('''You need to have pydot and Graphviz installed.
 
 To install Graphviz:
 http://www.graphviz.org/Download.php
@@ -18,7 +18,7 @@ Use your OS's package manager.
 
 To install pydot:
 $ pip install pydot
-'''
+''')
 
 DOT_DEFAULTS = {
   'graph_type': 'digraph',
@@ -45,8 +45,8 @@ EDGE_DEFAULTS = {
 }
 
 def print_usage():
-  print '''Usage: python create_database_diagram_from_database_file.py [databasefile]
-'''
+  print('''Usage: python create_database_diagram_from_database_file.py [databasefile]
+''')
 
 def get_indeces(string):
   paren_index = string.find('(')
@@ -90,7 +90,7 @@ def organize_rows(sql_lines):
   return data
 
 def populate_nodes_and_clusters(data, graph):
-  for table_name, value in data.iteritems():
+  for table_name, value in data.items():
     node = pydot.Node('\n'.join(value['fields']))
     cluster = pydot.Cluster(table_name, label=table_name)
     cluster.add_node(node)
@@ -99,7 +99,7 @@ def populate_nodes_and_clusters(data, graph):
     data[table_name]['cluster'] = cluster
 
 def populate_edges(data, graph):
-  for table_data in data.itervalues():
+  for table_data in data.values():
     for fk in table_data['fks']:
       target = fk.split(' REFERENCES ')[1]
       target_name = fk.split()[0]
@@ -127,6 +127,6 @@ if __name__ == '__main__':
   file_name = splitext(basename(file_name))[0]
   graph = create_graph(data)
   graph.write_png('%s.png' % file_name)
-  print 'DONE'
+  print('DONE')
 
 
